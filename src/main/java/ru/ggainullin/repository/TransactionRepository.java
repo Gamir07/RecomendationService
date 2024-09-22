@@ -3,8 +3,10 @@ package ru.ggainullin.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import ru.ggainullin.entities.ProductType;
 import ru.ggainullin.entities.Transaction;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -18,39 +20,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             JOIN users u
             ON t.user_id = u.id
             WHERE u.id = :user_id
-            AND p.type = 'DEBIT')
+            AND p.type = :type)
             THEN 1 ELSE 0 END
             AS BOOLEAN) AS exist;
             """, nativeQuery = true)
-    boolean ifUserHasDebitAccount(UUID user_id);
-    @Query(value = """
-            SELECT CAST(
-            CASE WHEN EXISTS(
-            SELECT 1 from transactions t
-            JOIN products p
-            ON t.product_id = p.id
-            JOIN users u
-            ON t.user_id = u.id
-            WHERE u.id = :user_id
-            AND p.type = 'INVEST')
-            THEN 1 ELSE 0 END
-            AS BOOLEAN) AS exist;
-            """, nativeQuery = true)
-    boolean ifUserHasInvestAccount(UUID user_id);
-    @Query(value = """
-            SELECT CAST(
-            CASE WHEN EXISTS(
-            SELECT 1 from transactions t
-            JOIN products p
-            ON t.product_id = p.id
-            JOIN users u
-            ON t.user_id = u.id
-            WHERE u.id = :user_id
-            AND p.type = 'CREDIT')
-            THEN 1 ELSE 0 END
-            AS BOOLEAN) AS exist;
-            """, nativeQuery = true)
-    boolean ifUserHasCreditAccount(UUID user_id);
+    boolean ifUserHasRequiredAccount(UUID user_id, ProductType type);
+
     @Query(value = """
             SELECT CAST(
             CASE WHEN EXISTS(
@@ -67,6 +42,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             AS BOOLEAN) AS exist;
              """, nativeQuery = true)
     boolean isDepositToSavingAccountLessThanOneThousand(UUID user_id);
+
     @Query(value = """
             SELECT count (t.type)
             FROM transactions t
@@ -81,6 +57,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             AND t.type = 'DEPOSIT'
              """, nativeQuery = true)
     int quantityOfDepositToSavingOrDebitAccount(UUID user_id);
+
     @Query(value = """
             SELECT
             SUM(t.amount) AS total
@@ -107,7 +84,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             AND t.type = 'WITHDRAWAL'
             AND p.type = 'DEBIT'
             """, nativeQuery = true)
-    Integer totalAmountOfWithdrawalFromDebitAccount(UUID user_id);
+    Integer totalAmountOfExpensesFromDebitAccount(UUID user_id);
 
     @Query(value = """
             SELECT CAST(
@@ -123,5 +100,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             THEN 1 ELSE 0 END
             AS BOOLEAN) AS exist;
             """, nativeQuery = true)
-    boolean ifTotalWithdrawalFromDebitAccountMoreThanHundredThousand(UUID user_id);
+    boolean ifTotalExpensesFromDebitAccountMoreThanHundredThousand(UUID user_id);
 }
