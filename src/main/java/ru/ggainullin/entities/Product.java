@@ -16,7 +16,6 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
-    @Enumerated(value = EnumType.STRING)
-    private ProductType type;
+    private String type;
     private String name;
 }

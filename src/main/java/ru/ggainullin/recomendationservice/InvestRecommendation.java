@@ -2,7 +2,6 @@ package ru.ggainullin.recomendationservice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.ggainullin.entities.ProductType;
 import ru.ggainullin.repository.ProductRepository;
 import ru.ggainullin.repository.TransactionRepository;
 
@@ -28,11 +27,11 @@ public class InvestRecommendation implements RecommendationProvider {
 
     @Override
     public Optional<Recommendation> provideRecommendationForUser(UUID userId) {
-        boolean account1 = transactionRepository.ifUserHasRequiredAccount(userId, ProductType.INVEST);
-        boolean account2 = transactionRepository.ifUserHasRequiredAccount(userId, ProductType.DEBIT);
+        boolean account1 = transactionRepository.ifUserHasRequiredAccount(userId, "INVEST");
+        boolean account2 = transactionRepository.ifUserHasRequiredAccount(userId, "DEBIT");
         boolean deposit = transactionRepository.isDepositToSavingAccountLessThanOneThousand(userId);
         if (!account1 && account2 && deposit) {
-            List<UUID> uuids = productRepository.listOfProducts(ProductType.INVEST);
+            List<UUID> uuids = productRepository.listOfProducts("INVEST");
             return Optional.of(new Recommendation(name, uuids.get(0), investRecommendation));
         }
         return Optional.empty();

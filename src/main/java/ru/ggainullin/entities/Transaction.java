@@ -16,8 +16,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
-    @Enumerated(value = EnumType.STRING)
-    private TransactionType type;
+    private String type;
 
     @OneToOne
     @JoinColumn(name = "user_id")

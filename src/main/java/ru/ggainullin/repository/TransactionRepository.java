@@ -3,10 +3,8 @@ package ru.ggainullin.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.ggainullin.entities.ProductType;
 import ru.ggainullin.entities.Transaction;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -24,7 +22,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             THEN 1 ELSE 0 END
             AS BOOLEAN) AS exist;
             """, nativeQuery = true)
-    boolean ifUserHasRequiredAccount(UUID user_id, ProductType type);
+    boolean ifUserHasRequiredAccount(UUID user_id, String type);
 
     @Query(value = """
             SELECT CAST(
@@ -56,15 +54,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             OR p.type = 'DEBIT'
             AND t.type = 'DEPOSIT'
              """, nativeQuery = true)
-    int quantityOfDepositToSavingOrDebitAccount(UUID user_id);
+    Integer quantityOfDepositToSavingOrDebitAccount(UUID user_id);
 
     @Query(value = """
             SELECT
             SUM(t.amount) AS total
             FROM
             transactions t
-            JOIN
-            product p ON t.product_id = p.id
+            JOIN products p
+            ON t.product_id = p.id
             WHERE
             t.user_id = :user_id
             AND t.type = 'DEPOSIT'
@@ -77,8 +75,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             SUM(t.amount) AS total
             FROM
             transactions t
-            JOIN
-            product p ON t.product_id = p.id
+            JOIN products p
+            ON t.product_id = p.id
             WHERE
             t.user_id = :user_id
             AND t.type = 'WITHDRAWAL'

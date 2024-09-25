@@ -2,7 +2,6 @@ package ru.ggainullin.recomendationservice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.ggainullin.entities.ProductType;
 import ru.ggainullin.repository.ProductRepository;
 import ru.ggainullin.repository.TransactionRepository;
 
@@ -28,14 +27,14 @@ public class CreditRecommendation implements RecommendationProvider {
 
     @Override
     public Optional<Recommendation> provideRecommendationForUser(UUID userId) {
-        boolean requiredAccount = transactionRepository.ifUserHasRequiredAccount(userId, ProductType.CREDIT);
+        boolean requiredAccount = transactionRepository.ifUserHasRequiredAccount(userId, "CREDIT");
         boolean requiredExpenses = transactionRepository.ifTotalExpensesFromDebitAccountMoreThanHundredThousand(userId);
         Integer totalDeposit = transactionRepository.totalAmountOfDepositToDebitAccount(userId);
         Integer totalExpenses = transactionRepository.totalAmountOfExpensesFromDebitAccount(userId);
 
         if (!requiredAccount && requiredExpenses) {
             if (totalDeposit > totalExpenses) {
-                List<UUID> uuids = productRepository.listOfProducts(ProductType.CREDIT);
+                List<UUID> uuids = productRepository.listOfProducts("CREDIT");
                 return Optional.of(new Recommendation(name, uuids.get(0), creditRecommendation));
             }
         }

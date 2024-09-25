@@ -2,7 +2,6 @@ package ru.ggainullin.recomendationservice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.ggainullin.entities.ProductType;
 import ru.ggainullin.repository.ProductRepository;
 import ru.ggainullin.repository.TransactionRepository;
 
@@ -29,14 +28,14 @@ public class SavingRecommendation implements RecommendationProvider {
 
     @Override
     public Optional<Recommendation> provideRecommendationForUser(UUID userId) {
-        boolean account = transactionRepository.ifUserHasRequiredAccount(userId, ProductType.DEBIT);
+        boolean account = transactionRepository.ifUserHasRequiredAccount(userId, "DEBIT");
         Integer totalDeposit = transactionRepository.totalAmountOfDepositToDebitAccount(userId);
         Integer totalExpenses = transactionRepository.totalAmountOfExpensesFromDebitAccount(userId);
         int quantityOfDeposits = transactionRepository.quantityOfDepositToSavingOrDebitAccount(userId);
 
         if (account) {
             if (totalDeposit > totalExpenses && quantityOfDeposits > 5){
-                List<UUID> uuids = productRepository.listOfProducts(ProductType.SAVING);
+                List<UUID> uuids = productRepository.listOfProducts("SAVING");
                 return Optional.of(new Recommendation(name, uuids.get(0), savingRecommendation));
             }
         }
