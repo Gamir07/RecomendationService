@@ -15,5 +15,4 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             where type = :type;
             """, nativeQuery = true)
     List<UUID> listOfProducts(String type);
-
 }

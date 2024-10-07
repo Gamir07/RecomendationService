@@ -2,27 +2,27 @@ package ru.ggainullin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.ggainullin.recomendationservice.Recommendation;
-import ru.ggainullin.recomendationservice.RecommendationProvider;
+import ru.ggainullin.recommendation.Recommendation;
+import ru.ggainullin.recommendation.RecommendationProvider;
+import ru.ggainullin.recommendation.UserRecommendations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class RecommendationService {
 
-    private final List<RecommendationProvider> recommendations;
-    private List<Recommendation> userRecommendations;
+    private final List<RecommendationProvider> recommendationsProvider;
+    private final UserRecommendations userRecommendations;
 
-    public List<Recommendation> recommendations(UUID userId) {
-        userRecommendations = new ArrayList<>();
-        for (RecommendationProvider recommendationProvider : recommendations) {
-            Optional<Recommendation> recommendation1 = recommendationProvider.provideRecommendationForUser(userId);
-            recommendation1.ifPresent(recommendation -> userRecommendations.add(recommendation));
+        public UserRecommendations recommendations(UUID userId) {
+        List<Recommendation> recommendations = new ArrayList<>();
+        for (RecommendationProvider recommendationProvider : recommendationsProvider) {
+            recommendationProvider.provideRecommendationForUser(userId).ifPresent(recommendations::add);
         }
+        userRecommendations.setRecommendationList(recommendations);
         return userRecommendations;
     }
 }

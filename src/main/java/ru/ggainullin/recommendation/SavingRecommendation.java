@@ -1,4 +1,4 @@
-package ru.ggainullin.recomendationservice;
+package ru.ggainullin.recommendation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

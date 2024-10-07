@@ -1,4 +1,4 @@
-package ru.ggainullin.recomendationservice;
+package ru.ggainullin.recommendation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
