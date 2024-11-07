@@ -2,7 +2,7 @@ package ru.ggainullin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.ggainullin.entities.Rule;
+import ru.ggainullin.dto.RuleDTO;
 import ru.ggainullin.service.RuleService;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class RulesController {
     private final RuleService service;
 
     @PostMapping
-    public Rule createRule(@RequestBody Rule rule) {
+    public RuleDTO createRule(@RequestBody RuleDTO rule) {
         return service.createRule(rule);
     }
 
@@ -26,7 +26,7 @@ public class RulesController {
     }
 
     @GetMapping
-    public List<Rule> getAllRules() {
+    public List<RuleDTO> getAllRules() {
         return service.getAllRules();
     }
 }

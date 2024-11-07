@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ggainullin.recommendation.UserRecommendations;
 import ru.ggainullin.service.RecommendationService;
+import ru.ggainullin.service.RuleService;
 
 import java.util.UUID;
 
@@ -15,10 +16,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RecommendationController {
 
-    private final RecommendationService service;
+    private final RecommendationService recommendationService;
+    private final RuleService ruleService;
+
 
     @GetMapping("/{user_id}")
     public UserRecommendations recommendation(@PathVariable("user_id") UUID userId) {
-        return service.recommendations(userId);
+        return recommendationService.recommendations(userId);
     }
 }
